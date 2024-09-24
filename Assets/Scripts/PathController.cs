@@ -5,6 +5,9 @@ using UnityEngine;
 
 public class PathController : MonoBehaviour
 {
+    public Animator animator;
+    private bool isWalking;
+    
     [SerializeField]
     public PathManager pathManager;
 
@@ -17,6 +20,9 @@ public class PathController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        isWalking = false;
+        animator.SetBool("isWalking", isWalking);
+        
         thePath = pathManager.GetPath();
         Debug.Log(thePath[0].pos.x+", "+thePath[0].pos.z);
         if (thePath != null && thePath.Count > 0)
@@ -50,8 +56,17 @@ public class PathController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        rotateTowardTarget();
-        moveForward();
+        if (Input.anyKeyDown)
+        {
+            isWalking = !isWalking;
+            animator.SetBool("isWalking", isWalking);
+        }
+
+        if (isWalking)
+        {
+            rotateTowardTarget();
+            moveForward();
+        }
     }
 
     private void OnTriggerEnter(Collider other)
